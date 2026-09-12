@@ -12,7 +12,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-mkdocs serve          # 打开 http://127.0.0.1:8000
+mkdocs serve          # 注意：地址会带 site_url 的子路径，见 docs/deploy.md
 ```
 
 ## 构建与发布
@@ -34,7 +34,23 @@ mkdocs gh-deploy --force  # 一键发布到 GitHub Pages 的 gh-pages 分支
 | `repo_url` | 代码仓库地址，右上角图标与「编辑此页」入口 |
 | `extra.social[0].link` | 页脚 GitHub 图标链接 |
 
-详细步骤见文档中的「部署本文档站」章节。
+详细步骤见文档中的「部署本文档站」章节。如果读者主要在**飞书**里，
+见该章节的 [7 在飞书里接入](docs/deploy.md) —— 飞书不托管静态站点，
+正确做法是站点部署在可达地址上、飞书配置成工作台「网页应用」做入口。
+
+## 国内 / 内网访问适配
+
+站点**不依赖任何境外 CDN**，可以直接部署在无外网出口的内网环境：
+
+| 项 | 处理 |
+|---|---|
+| 字体 | `theme.font: false`，用系统字体栈（中文本来就是系统字体渲染，观感不变） |
+| mermaid 架构图 | 自托管 `docs/assets/javascripts/mermaid.min.js`，不走 unpkg |
+
+!!! warning "`docs/assets/javascripts/mermaid.min.js` 约 3.4 MB"
+    它会在首次访问时加载一次（gzip 后约 950 KB），之后走浏览器缓存。
+    确认部署环境能稳定访问 unpkg 时，可以删掉它和 `mkdocs.yml` 里的
+    `extra_javascript` 退回 CDN —— **但内网部署不要这么做**，否则架构图全部空白。
 
 ## 目录结构
 
@@ -45,8 +61,11 @@ tensei-server-doc/
 ├── .github/workflows/ci.yml   # 自动构建并发布到 GitHub Pages
 └── docs/
     ├── index.md               # 概述
-    ├── deploy.md              # 文档站部署说明
-    ├── assets/extra.css       # 自定义样式
+    ├── deploy.md              # 文档站部署说明 + 飞书接入
+    ├── assets/
+    │   ├── extra.css          # 自定义样式与中文字体栈
+    │   └── javascripts/
+    │       └── mermaid.min.js # 自托管 mermaid（避免 unpkg）
     ├── overrides/main.html    # 主题覆盖（页脚作者信息）
     ├── user/                  # 用户指南
     └── admin/                 # 管理员手册

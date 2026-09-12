@@ -1,5 +1,19 @@
 /* Tensei 集群文档站自定义样式 */
 
+/* ---------------------------------------------------------------------------
+   字体：mkdocs.yml 里设置了 theme.font: false，不再加载 Google Fonts。
+   这里改用系统字体栈，优先中文系统字体，保证国内访问与飞书内置浏览器
+   下的渲染速度和字形都正常。
+   --------------------------------------------------------------------------- */
+:root {
+  --md-text-font: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei",
+    sans-serif;
+  --md-code-font: "SFMono-Regular", "SF Mono", Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
 /* 让长命令块可以横向滚动而不撑破页面 */
 .md-typeset pre > code {
   white-space: pre;
