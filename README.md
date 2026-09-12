@@ -19,20 +19,34 @@ mkdocs serve          # 注意：地址会带 site_url 的子路径，见 docs/d
 
 ```bash
 mkdocs build --strict     # 产物在 site/
-mkdocs gh-deploy --force  # 一键发布到 GitHub Pages 的 gh-pages 分支
 ```
 
-推送到 `main` 分支后，`.github/workflows/ci.yml` 会自动构建并发布到 GitHub Pages。
+### 发布到 GitHub Pages
+
+```bash
+./scripts/deploy-github-pages.sh <GitHub用户名> <仓库名>
+```
+
+脚本会自动推断站点地址（区分 `<user>.github.io` 仓库与普通仓库）、改写
+`mkdocs.yml` 里的三处地址、跑一次 `--strict` 构建校验、提交并添加远程。
+之后按提示 `git push -u origin main`，再到仓库 **Settings → Pages**
+把 **Source** 设为 **GitHub Actions**。
+
+推送后 `.github/workflows/ci.yml` 会自动构建并发布。
 
 ## 部署前需要修改
 
-`mkdocs.yml` 顶部有三处占位符，发布前请替换为真实值：
+`mkdocs.yml` 顶部有三处占位符，发布前请替换为真实值（上面的脚本会自动完成）：
 
 | 配置项 | 说明 |
 |---|---|
-| `site_url` | 线上访问地址，影响搜索与社交分享卡片 |
+| `site_url` | 线上访问地址，影响资源路径、搜索与社交分享卡片 |
 | `repo_url` | 代码仓库地址，右上角图标与「编辑此页」入口 |
 | `extra.social[0].link` | 页脚 GitHub 图标链接 |
+
+!!! warning "`site_url` 写错的后果"
+    它决定站点的根路径。如果仓库叫 `tensei-server-doc` 而 `site_url`
+    写成了根路径，线上会**页面能开但样式全丢**。所以用脚本而不是手改。
 
 详细步骤见文档中的「部署本文档站」章节。如果读者主要在**飞书**里，
 见该章节的 [7 在飞书里接入](docs/deploy.md) —— 飞书不托管静态站点，
