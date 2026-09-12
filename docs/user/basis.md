@@ -74,7 +74,7 @@ sbatch --array=0-23 --time=00:30:00 hourly.sh
 !!! tip "为什么管理员要检查这些入口"
     设备隔离只覆盖 systemd 管理的用户会话。如果某个入口没有经过 PAM session，
     就可能绕过限制。管理员需要定期用 `ps -o cgroup`、`crontab -l`、`loginctl` 核查，
-    相关命令见[访问入口与安全加固](admin/access-security.md)。
+    相关命令见[访问入口与安全加固](../admin/access-security.md)。
 
 ## 磁盘与数据安全
 

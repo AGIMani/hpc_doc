@@ -117,7 +117,7 @@ flowchart TB
 | 第一次登录服务器 | [访问集群](user/access.md) → [快速开始](user/quickstart.md) |
 | 跑一个 Python 训练脚本 | [Slurm 任务调度](user/slurm.md) → [GPU 训练实战](user/gpu-training.md) |
 | 边调代码边用显卡 | [交互式任务 `srun --pty`](user/slurm.md#交互式调试srun---pty) |
-| 一次提交几十组实验 | [批量任务与任务组](user/slurm.md#批量提交sbatch-与任务组) |
+| 一次提交几十组实验 | [批量任务与任务组](user/slurm.md#后台批处理sbatch-与任务组) |
 | 用 8 张卡跑一个模型 | [单机多卡训练](user/gpu-training.md#单机多卡训练) |
 | 用几台机器联合训练 | [多机多卡训练](user/gpu-training.md#多机多卡训练) |
 | 装 PyTorch / 配虚拟环境 | [Python 环境管理](user/conda.md) |

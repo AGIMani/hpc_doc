@@ -100,6 +100,11 @@ markdown_extensions:
   - toc:
       permalink: true
       toc_depth: 3
+      # 关键：默认 slugify 会把中文标题整体丢掉，生成 _1 / _2 这样的锚点。
+      # 换成 pymdownx 的 Unicode slugify，中文标题才能得到可读、可引用的锚点。
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.keys
@@ -121,12 +126,11 @@ plugins:
       lang:
         - zh
         - en
-  # 自动为标题编号（同级小节 1. 2. 3. ...）
-  - add-number:
-      strict_mode: False
-      order: 2
+  # 注意：这里刻意不启用 mkdocs-add-number-plugin。
+  # 它会把标题 id 替换成序号（#1、#4-srun-pty 之类），
+  # 导致文档内所有「页面#小节」形式的交叉引用全部失效，
+  # 而且每次增删小节都要重新编号。稳定可读的锚点更重要。
   # 页脚显示作者与最后更新时间（需要 docs/ 位于 git 仓库中）
   - git-authors:
       show_contribution: true
       show_line_count: false
-      fallback_to_git: true

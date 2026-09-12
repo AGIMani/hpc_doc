@@ -208,7 +208,7 @@ sacct -u "$USER" --starttime=today
 | 我想…… | 去看 |
 |---|---|
 | 搞懂 `srun` / `sbatch` / `salloc` 的全部参数 | [Slurm 任务调度](slurm.md) |
-| 一次跑几十组实验 | [批量提交与任务组](slurm.md#批量提交sbatch-与任务组) |
+| 一次跑几十组实验 | [批量提交与任务组](slurm.md#后台批处理sbatch-与任务组) |
 | 用满 8 张卡训一个模型 | [GPU 训练实战](gpu-training.md) |
 | 任务一直排队，不知道为什么 | [用量查询与监控](monitor.md) |
 | 遇到报错 | [常见问题](faq.md) |

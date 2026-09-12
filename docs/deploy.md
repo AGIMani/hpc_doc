@@ -27,7 +27,6 @@ mkdocs serve
 
 ```text
 mkdocs-material>=9.5,<10
-mkdocs-add-number-plugin>=1.3
 mkdocs-git-authors-plugin>=0.9
 jieba>=0.42
 ```
@@ -35,6 +34,15 @@ jieba>=0.42
 !!! note "为什么需要 jieba"
     `mkdocs.yml` 中 `plugins.search.lang` 包含 `zh`，Material 会使用 jieba 做**中文分词**，
     否则中文搜索只能整句匹配，效果很差。
+
+!!! warning "为什么没有用 mkdocs-add-number-plugin"
+    [AIR-Server-Doc](https://github.com/Co1lin/AIR-Server-Doc) 用这个插件给标题自动编号，
+    但它会把标题的 `id` **替换成序号**（`#1`、`#4-srun-pty`），
+    导致所有「页面#小节」形式的交叉引用失效，且每次增删小节都要重新编号。
+
+    本项目的取舍是：**保留可读、稳定的中文锚点**，不自动编号。
+    如果确实需要编号，请手工写在标题里（例如 `## 3 启动服务`），
+    锚点会变成 `#3-启动服务`，仍然可引用。
 
 ## 2 部署前必须修改的配置
 
@@ -60,6 +68,35 @@ extra:
 !!! warning "`site_url` 末尾的斜杠不能少"
     必须是 `https://.../tensei-server-doc/`，写成 `.../tensei-server-doc` 会导致
     部分相对链接解析错误。
+
+### 不要改掉 `toc.slugify`
+
+`mkdocs.yml` 里有这样一段，**它是中文站点的关键配置**：
+
+```yaml
+markdown_extensions:
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+```
+
+Python-Markdown 默认的 slugify 会**丢弃所有非 ASCII 字符**。
+对中文标题来说，这等于标题被清空，于是锚点退化成 `_1`、`_2`、`_3`……
+既没法阅读，也没法稳定引用（插一个新标题，后面全部错位）。
+
+换成 `pymdownx.slugs.slugify` 后，中文标题会得到可读的锚点：
+
+| 标题 | 默认 slugify | 配置后 |
+|---|---|---|
+| `## 快速开始` | `_1` | `快速开始` |
+| `## 为什么必须通过 Slurm 使用 GPU` | `_2` | `为什么必须通过-slurm-使用-gpu` |
+| `## 后台批处理：sbatch 与任务组` | `_3` | `后台批处理sbatch-与任务组` |
+
+!!! danger "改这个配置会让所有已有的对外链接失效"
+    如果文档已经发布并被别人引用过，切换 slugify 方案后旧锚点全部 404。
+    建议在**首次发布前**就定好，不要中途改。
 
 ## 3 构建
 
@@ -207,7 +244,7 @@ server {
 ```dockerfile
 FROM squidfunk/mkdocs-material:9
 RUN pip install --no-cache-dir \
-      mkdocs-add-number-plugin mkdocs-git-authors-plugin jieba
+      mkdocs-git-authors-plugin jieba
 WORKDIR /docs
 COPY . /docs
 RUN mkdocs build --strict
@@ -265,4 +302,4 @@ flowchart LR
 | CI 报 `fatal: detected dubious ownership` 或作者信息为空 | `actions/checkout` 没设 `fetch-depth: 0` |
 | 页面样式错乱 | `site_url` 与实际部署路径不一致，检查子路径是否写对 |
 | 本地正常，线上 404 | Pages 的 Source 配置与实际分支不一致 |
-| `add-number` 插件报错 | 检查页面标题层级是否跳级（例如 `#` 直接到 `###`） |
+| 中文标题的锚点变成 `_1` / `_2` | `toc.slugify` 没配 Unicode 版本，见 [第 2 节](#2-部署前必须修改的配置) |
