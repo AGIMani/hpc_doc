@@ -21,6 +21,15 @@ mkdocs serve
 
 浏览器打开 <http://127.0.0.1:8000>。**修改 `docs/` 下的任意文件后页面会自动刷新。**
 
+!!! tip "本地预览时地址为什么会带一个子路径"
+    `mkdocs serve` 会遵循 `site_url` 里的路径部分。
+    如果 `site_url` 是 `https://your-org.github.io/tensei-server-doc/`，
+    那么本地服务实际地址是 `http://127.0.0.1:8000/tensei-server-doc/`，
+    访问根路径会被 302 重定向过去。
+
+    如果希望本地就在根路径预览，临时把 `site_url` 改成 `http://127.0.0.1:8000/` 即可
+    —— 但**提交前记得改回来**，否则线上资源路径会错。
+
 ### 依赖清单
 
 `requirements.txt`：
