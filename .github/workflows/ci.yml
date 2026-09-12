@@ -35,6 +35,11 @@ jobs:
           python-version: '3.12'
           cache: pip
 
+      # 提前校验 Pages 是否已启用。没启用时这一步就会明确报错，
+      # 而不是等到最后上传产物才失败，省得来回猜。
+      - name: 检查 Pages 配置
+        uses: actions/configure-pages@v5
+
       - name: 安装依赖
         run: pip install -r requirements.txt
 
