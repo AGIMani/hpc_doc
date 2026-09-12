@@ -1,0 +1,53 @@
+/* Tensei 集群文档站自定义样式 */
+
+/* 让长命令块可以横向滚动而不撑破页面 */
+.md-typeset pre > code {
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* 表格在窄屏下更紧凑，便于查看参数说明 */
+.md-typeset table:not([class]) {
+  font-size: 0.72rem;
+}
+
+.md-typeset table:not([class]) th {
+  white-space: nowrap;
+}
+
+/* 首页的集群规格卡片 */
+.cluster-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.cluster-specs > div {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.3rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.cluster-specs strong {
+  display: block;
+  font-size: 1.05rem;
+  color: var(--md-primary-fg-color);
+}
+
+/* 命令提示符样式，用于区分「谁在什么身份下执行」 */
+.prompt-root {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.prompt-user {
+  color: #388e3c;
+  font-weight: 600;
+}
+
+/* 危险操作块更醒目 */
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+  border-color: #d32f2f;
+}
