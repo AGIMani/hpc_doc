@@ -7,7 +7,7 @@
 
 site_name: Tensei A100 集群使用与管理文档
 site_description: 八卡 A100 服务器的 GPU 任务提交、节点访问与集群管理指南
-site_author: Tensei Cluster Admin
+site_author: xiaoxu03
 
 # >>> 部署前必改：换成你实际的线上地址（影响搜索、分享卡片与 canonical 链接）
 site_url: https://your-org.github.io/tensei-server-doc/
@@ -17,7 +17,7 @@ repo_url: https://github.com/your-org/tensei-server-doc
 repo_name: your-org/tensei-server-doc
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; Tensei Cluster
+copyright: Copyright &copy; xiaoxu03
 
 nav:
   - 概述: index.md
@@ -39,7 +39,6 @@ nav:
       - 用户与账号管理: admin/users.md
       - 访问入口与安全加固: admin/access-security.md
       - 备份、扩容与日常运维: admin/ops.md
-  - 部署本文档站: deploy.md
 
 theme:
   name: material

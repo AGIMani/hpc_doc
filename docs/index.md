@@ -124,7 +124,6 @@ flowchart TB
 | 看我的任务跑了多久、排队为什么慢 | [用量查询](user/monitor.md) |
 | 任务报错了 | [常见问题](user/faq.md) |
 | 部署 / 维护这套集群 | [管理员手册](admin/index.md) |
-| 把这个文档站发布到线上 | [部署本文档站](deploy.md) |
 
 ## 约定与术语
 
