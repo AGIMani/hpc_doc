@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 #
-# 把文档站发布到 GitHub Pages。
+# 把文档站发布到 GitHub Pages。个人账号和组织（Organization）都适用。
 #
-#   ./scripts/deploy-github-pages.sh <GitHub用户名> <仓库名>
+#   ./scripts/deploy-github-pages.sh <账号或组织名> <仓库名>
 #
 # 例如：
 #   ./scripts/deploy-github-pages.sh xiaoxu03 tensei-server-doc
 #   ./scripts/deploy-github-pages.sh xiaoxu03 xiaoxu03.github.io
+#   ./scripts/deploy-github-pages.sh my-lab tensei-server-doc     # 组织
 #
-# 脚本会：改写 mkdocs.yml 里的三处地址 -> 提交 -> 添加远程 -> 推送。
-# 推送完成后还需要在 GitHub 网页上开启 Pages（见输出提示）。
+# 脚本会：改写 mkdocs.yml 里的三处地址 -> 构建校验 -> 提交 -> 添加远程。
+# 推送与开启 Pages 的步骤见脚本末尾的输出提示。
+#
+# 注意（组织账号）：推送前请确认组织没有限制 Pages 发布或 Actions 运行，
+# 否则工作流会失败。详见 docs/deploy.md 的「部署到 GitHub 组织」一节。
 
 set -Eeuo pipefail
 
@@ -18,8 +22,8 @@ REPO_NAME="${2:-}"
 
 die() { echo "错误：$*" >&2; exit 1; }
 
-[[ -n "$GITHUB_USER" ]] || die "用法：$0 <GitHub用户名> <仓库名>"
-[[ -n "$REPO_NAME" ]]   || die "用法：$0 <GitHub用户名> <仓库名>"
+[[ -n "$GITHUB_USER" ]] || die "用法：$0 <账号或组织名> <仓库名>"
+[[ -n "$REPO_NAME" ]]   || die "用法：$0 <账号或组织名> <仓库名>"
 
 # 必须在仓库根目录执行
 [[ -f mkdocs.yml ]] || die "当前目录没有 mkdocs.yml，请在 tensei-server-doc 目录下执行"
@@ -36,7 +40,7 @@ else
 fi
 REPO_URL="https://github.com/${GITHUB_USER}/${REPO_NAME}"
 
-echo "GitHub 用户 : $GITHUB_USER"
+echo "账号 / 组织 : $GITHUB_USER"
 echo "仓库名      : $REPO_NAME"
 echo "站点地址    : $SITE_URL"
 echo "仓库地址    : $REPO_URL"

@@ -24,13 +24,19 @@ mkdocs build --strict     # 产物在 site/
 ### 发布到 GitHub Pages
 
 ```bash
-./scripts/deploy-github-pages.sh <GitHub用户名> <仓库名>
+./scripts/deploy-github-pages.sh <账号或组织名> <仓库名>
 ```
 
-脚本会自动推断站点地址（区分 `<user>.github.io` 仓库与普通仓库）、改写
+脚本会自动推断站点地址（区分 `<owner>.github.io` 仓库与普通仓库）、改写
 `mkdocs.yml` 里的三处地址、跑一次 `--strict` 构建校验、提交并添加远程。
 之后按提示 `git push -u origin main`，再到仓库 **Settings → Pages**
 把 **Source** 设为 **GitHub Actions**。
+
+!!! warning "部署到组织账号前先看文档"
+    组织有三个设置会导致工作流失败：禁止成员发布 Pages、
+    Actions 策略不允许官方 Action、开启「必须固定到完整 SHA」。
+    另外**私有仓库 ≠ 私有站点** —— 站点要仅组织成员可见需要
+    GitHub Enterprise Cloud。详见 `docs/deploy.md` 的 4.5 节。
 
 推送后 `.github/workflows/ci.yml` 会自动构建并发布。
 

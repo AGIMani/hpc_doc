@@ -212,6 +212,104 @@ mkdocs gh-deploy --force
     `gh-deploy` 和 Actions 都会写 Pages，混用会互相覆盖。
     选了 Actions（Source = GitHub Actions）就不要再跑 `gh-deploy`。
 
+### 4.5 部署到 GitHub 组织
+
+把文档放到**组织（Organization）**而不是个人账号下，步骤基本一样，
+URL 规则也一样（`https://<组织名>.github.io/<仓库名>/`），
+但有**三处组织级设置会直接导致失败**，必须先确认。
+
+#### 命令上的唯一区别
+
+把账号名换成组织名即可：
+
+```bash
+./scripts/deploy-github-pages.sh my-lab tensei-server-doc
+```
+
+!!! note "组织专用站点仓库"
+    如果希望站点在 `https://my-lab.github.io/` 根路径，仓库必须叫
+    `my-lab.github.io`（与组织同名）。**一个账号只能有一个**这样的仓库。
+
+#### 三个可能卡住你的组织设置
+
+**① 组织可能禁止成员发布 Pages**
+
+组织所有者可以整体关闭 Pages 发布。
+
+* 检查路径：组织 → **Settings → Access → Member privileges → Pages creation**
+* 如果 "Public" 没有被勾选，**没有人能发布公开 Pages 站点**
+
+!!! warning "未发布 ≠ 取消发布"
+    官方说明：禁止发布后，**已经发布的站点会保持发布状态**，
+    需要手动去取消发布。所以"关了开关"不等于"站点下线了"。
+
+**② 组织可能限制了 Actions 能运行的 Action**
+
+* 检查路径：组织 → **Settings → Actions → General → Policies**
+
+如果策略是 **"Allow select actions"**，要确保允许了 **GitHub 创建的操作**
+（`actions` 和 `github` 两个组织）。我们的工作流用的全是 GitHub 官方 Action：
+
+| Action | 用途 |
+|---|---|
+| `actions/checkout@v4` | 检出代码 |
+| `actions/setup-python@v5` | 准备 Python |
+| `actions/configure-pages@v5` | 校验 Pages 配置 |
+| `actions/upload-pages-artifact@v3` | 上传构建产物 |
+| `actions/deploy-pages@v4` | 发布 |
+
+!!! danger "「必须固定到完整 SHA」策略会让工作流直接失败"
+    如果组织开启了 **"Require actions to be pinned to a full-length commit SHA"**，
+    上面这种 `@v4` 的标签写法**全部不被允许**，工作流会在第一步就报错。
+
+    两个选择：让组织管理员放开该策略，或者把每个 Action 改成完整的 40 位 commit SHA：
+
+    ```yaml
+    - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955  # v4.3.1
+    ```
+
+    后者更安全但需要手工维护版本号。
+
+**③ 你可能没有建仓库的权限**
+
+组织可以限制仓库创建（组织 → **Settings → Access → Repository creation**）。
+如果没有权限，需要找组织所有者建好空仓库，或给你创建权限。
+
+#### 计划（Plan）差异
+
+这是组织和个人账号最容易踩的差异：
+
+| 组织计划 | 能从私有仓库发布 Pages | 站点可否仅组织成员可见 |
+|---|---|---|
+| **GitHub Free for organizations** | ❌ 只能从**公开**仓库发布 | ❌ |
+| **GitHub Team** | ✅ | ❌ 站点仍是公开的 |
+| **GitHub Enterprise Cloud** | ✅ | ✅ 可设为非公开 |
+
+!!! danger "「私有仓库」和「私有站点」是两件事"
+    很多人以为把仓库设为私有，Pages 站点就自动只对内部可见 —— **不是这样**。
+
+    * **私有仓库 + Team**：代码不公开，但**发布出来的站点任何人都能访问**
+    * **站点仅组织成员可见**：只有 GitHub Enterprise Cloud 支持
+
+    如果这套运维文档不适合公开，Team 计划并不能解决问题，
+    要么上 Enterprise Cloud，要么改用[内网 Nginx](#5-方案二内网-nginx)。
+
+#### 推送前的检查清单
+
+```text
+[ ] 组织允许成员创建仓库（否则先找 owner 建好）
+[ ] Member privileges → Pages creation → Public 已勾选
+[ ] Actions 策略允许 GitHub 官方 Action
+[ ] 没有开启「必须固定到完整 SHA」策略（或已把版本改成 SHA）
+[ ] 已确认组织计划是否支持私有仓库发布 Pages
+[ ] 已确认这套文档可以公开发布（无 IP、无凭据、无真实人名）
+```
+
+!!! tip "把 Actions 的报错读对"
+    组织策略导致的失败通常出现在**第一步**，报错信息形如
+    `The action actions/checkout@v4 is not allowed in this organization`。
+    看到这类信息就直接去查上面的 ②，不用怀疑文档配置。
+
 ## 5 方案二：内网 Nginx
 
 适合把文档放在公司内网或集群登录节点上。
