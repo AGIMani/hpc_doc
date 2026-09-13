@@ -120,9 +120,8 @@ flowchart TB
 | 一次提交几十组实验 | [批量任务与任务组](user/slurm.md#后台批处理sbatch-与任务组) |
 | 用 8 张卡跑一个模型 | [单机多卡训练](user/gpu-training.md#单机多卡训练) |
 | 用几台机器联合训练 | [多机多卡训练](user/gpu-training.md#多机多卡训练) |
-| 装 PyTorch / 配虚拟环境 | [Python 环境管理](user/conda.md) |
-| 看我的任务跑了多久、排队为什么慢 | [用量查询与监控](user/monitor.md) |
-| 看整机 GPU 实时占用 | [Grafana 看板](user/monitor.md#grafana-看板) |
+| 装 PyTorch / 配虚拟环境 | [Python 环境管理](user/uv.md) |
+| 看我的任务跑了多久、排队为什么慢 | [用量查询](user/monitor.md) |
 | 任务报错了 | [常见问题](user/faq.md) |
 | 部署 / 维护这套集群 | [管理员手册](admin/index.md) |
 | 把这个文档站发布到线上 | [部署本文档站](deploy.md) |

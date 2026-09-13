@@ -29,7 +29,7 @@ srun --gres=gpu:1 --time=00:05:00 nvidia-smi -L
 |---|---|
 | 在登录终端里跑 | 用 `srun --gres=gpu:1` 提交 |
 | 任务没申请 GPU | 加 `--gres=gpu:1` |
-| conda 与 pip 混装了 PyTorch | 重建环境，只用一种方式装 |
+| 装成了 CPU 版 PyTorch | 用 `cuXXX` 源重装，见 [Python 环境管理](uv.md#安装-pytorch) |
 
 ```bash
 # 在 Slurm 任务里诊断
@@ -192,47 +192,43 @@ scontrol show job <JOBID> | grep -E 'StdOut|StdErr|WorkDir'
 
 ## 环境与依赖
 
-### `sbatch` 任务里 `conda activate` 失败
+### `sbatch` 任务里用了系统 Python
 
-非交互式 shell 不会自动加载 conda 的函数定义。在脚本开头显式加载：
+非交互式 shell 不会自动加载任何环境。在脚本开头显式指定：
 
 ```bash
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate myenv
+source ~/myproject/.venv/bin/activate
 ```
 
 ### 多机任务报 `ModuleNotFoundError`
 
 环境装在了某台机器的**本地盘**上，其他节点看不到。
-把 conda 环境放到**共享目录**（家目录或共享数据盘）。
+把虚拟环境放到**共享目录**（家目录或共享数据盘）。
 
 ### 装包很慢或超时
 
 服务器访问外网受限。配置镜像源：
 
 ```bash
-# conda
-cat > ~/.condarc <<'EOF'
-channels:
-  - defaults
-default_channels:
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-EOF
+# uv：设置默认源（写进 ~/.bashrc 长期生效）
+echo 'export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple' >> ~/.bashrc
 
 # pip
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
+!!! note "PyTorch 官方源没有国内镜像"
+    `download.pytorch.org` 只能直连。慢的话挂代理，
+    或在能上网的机器下载 wheel 再传上来，见 [Python 环境管理](uv.md#换国内镜像加速)。
+
 ### `libcudart.so.XX: cannot open shared object file`
 
-conda 和 pip 混装 PyTorch 导致 CUDA 运行时冲突。
-**重建环境**，只用一种方式安装：
+环境里的 CUDA 运行时版本互相冲突。**重建环境**：
 
 ```bash
-conda remove -n myenv --all
-conda create -n myenv python=3.11 -y
-conda activate myenv
-conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+rm -rf .venv
+uv venv --python 3.12
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 ```
 
 ## 多机与多卡
@@ -274,39 +270,6 @@ squeue -u "$USER"
 
     把 `nvidia-smi topo -m` 和 `ibstat` 的输出一起发给管理员。
 
-## 访问与页面
-
-### SSH 能登录，但监控页面打不开
-
-隧道没建好。检查：
-
-1. Xshell 会话是否处于连接状态（隧道随会话建立）；
-2. 或命令行隧道进程是否还在：
-
-    ```bash
-    ssh -N -L 3000:127.0.0.1:3000 -L 9090:127.0.0.1:9090 zhangsan@SERVER_IP
-    ```
-
-3. 浏览器地址是否正确（`http://localhost:3000`）。
-
-### 提示本地端口被占用
-
-改本地端口，**目标端口保持不变**：
-
-```bash
-ssh -N -L 13000:127.0.0.1:3000 zhangsan@SERVER_IP
-# 浏览器改用 http://localhost:13000
-```
-
-### Grafana 登录失败
-
-Grafana 是**独立账号体系**，SSH 能登录不代表能登录 Grafana。
-联系管理员开通。
-
-### Cockpit 提示证书不受信任
-
-正常的自签名证书提示。确认地址是 `https://localhost:9090`
-且隧道目标正确后继续访问。
 
 ## 磁盘与文件
 
@@ -316,11 +279,11 @@ Grafana 是**独立账号体系**，SSH 能登录不代表能登录 Grafana。
 # 看谁占了空间
 du -sh ~/* | sort -h | tail -10
 
-# conda 缓存通常是大头
-conda clean --all
+# uv 的下载缓存通常是大头
+uv cache clean
 
-# 删除不用的环境
-conda remove -n old_env --all
+# 删除不用的虚拟环境
+rm -rf ~/oldproject/.venv
 ```
 
 !!! danger "家目录写满会影响整个集群"
@@ -378,4 +341,4 @@ python -c "import torch,sys; print(sys.version); print(torch.__version__, torch.
 * [Slurm 任务调度](slurm.md) —— 参数含义与排队规则
 * [GPU 训练实战](gpu-training.md) —— 多卡、显存与性能
 * [用量查询与监控](monitor.md) —— 查看状态与用量
-* [Python 环境管理](conda.md) —— 环境问题
+* [Python 环境管理](uv.md) —— 环境问题

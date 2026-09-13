@@ -29,7 +29,7 @@
 
 !!! info "所有服务只监听 `127.0.0.1`"
     这是有意的：监控数据不经过公网，访问统一走 SSH 隧道。
-    见[访问集群](../user/access.md#通过-ssh-隧道访问监控页面)。
+    见[通过 SSH 隧道访问面板](access-security.md#通过-ssh-隧道访问面板)。
 
 数据链路：
 
@@ -826,4 +826,4 @@ curl --noproxy '*' -fsS http://127.0.0.1:9401/metrics | head -3
 
 * [记账与用量统计](accounting.md) —— MariaDB、只读账号与 `sacct`
 * [调度策略与配额](policy.md) —— 理解分配量与实际用量的区别
-* [访问集群](../user/access.md#通过-ssh-隧道访问监控页面) —— SSH 隧道配置
+* [访问入口与安全加固](access-security.md#通过-ssh-隧道访问面板) —— SSH 隧道配置

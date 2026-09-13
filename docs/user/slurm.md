@@ -486,6 +486,6 @@ python -c "import torch; print('torch 可见卡数:', torch.cuda.device_count())
 | 我想…… | 去看 |
 |---|---|
 | 跑通单机多卡 / 多机训练 | [GPU 训练实战](gpu-training.md) |
-| 配置 conda 环境 | [Python 环境管理](conda.md) |
+| 配置 Python 环境 | [Python 环境管理](uv.md) |
 | 看用量统计与实时占用 | [用量查询与监控](monitor.md) |
 | 任务报错 | [常见问题](faq.md) |

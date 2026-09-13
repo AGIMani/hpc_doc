@@ -27,8 +27,8 @@ nav:
       - 使用须知: user/basis.md
       - Slurm 任务调度: user/slurm.md
       - GPU 训练实战: user/gpu-training.md
-      - Python 环境管理: user/conda.md
-      - 用量查询与监控: user/monitor.md
+      - Python 环境管理: user/uv.md
+      - 用量查询: user/monitor.md
       - 常见问题: user/faq.md
   - 管理员手册:
       - 总览与规划: admin/index.md

@@ -107,9 +107,8 @@ exit
 
 mkdir -p logs
 
-# 进入虚拟环境（如果用了 conda）
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate myenv
+# 激活项目虚拟环境
+source ~/myproject/.venv/bin/activate
 
 # -u 让 Python 不缓冲输出，日志能实时看到
 python -u train.py
@@ -173,9 +172,6 @@ sacct -u "$USER" --starttime=today \
       --format=JobID,JobName,Elapsed,AllocTRES,State
 ```
 
-网页看板（先建 SSH 隧道，见 [访问集群](access.md#通过-ssh-隧道访问监控页面)）：
-
-* `http://localhost:3000` → Grafana，看每张卡的实时占用和按用户统计的卡时
 
 ## 完整流程速查
 

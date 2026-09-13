@@ -53,7 +53,7 @@
 | 入口 | 说明 |
 |---|---|
 | `crontab` 定时任务 | 定时任务同样运行在受限会话中，拿不到 GPU |
-| 网页终端 / Cockpit 终端 | 属于普通登录会话，同样受限 |
+| 网页终端 | 属于普通登录会话，同样受限 |
 | 常驻后台服务 | 不要用 `nohup` / `systemd --user` 长期占卡，请用 `sbatch` |
 
 正确做法：**用 `sbatch` 提交，用 `--begin` 延时启动**。
@@ -93,7 +93,7 @@ du -sh ~/* | sort -h  # 家目录里各子目录大小，从大到小
 
 ## 环境与依赖
 
-* **不要** 在系统 Python 里 `pip install`。用 conda 虚拟环境，见 [Python 环境管理](conda.md)。
+* **不要** 在系统 Python 里 `pip install`。用 uv 虚拟环境，见 [Python 环境管理](uv.md)。
 * **不要** 自行 `apt install` / 升级 NVIDIA 驱动或 CUDA —— 驱动升级需要同时处理
   Fabric Manager 版本，做错了这台机器上所有卡都不能用。需要新软件请联系管理员。
 * CUDA Toolkit 已经装好，路径在 `/usr/local/cuda`（默认版本）以及带版本号的目录下。

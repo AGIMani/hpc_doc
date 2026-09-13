@@ -441,5 +441,5 @@ if start_epoch > 0:
 
 * [Slurm 任务调度](slurm.md) —— 全部提交参数与批量任务组
 * [用量查询与监控](monitor.md) —— 查看自己和他人的 GPU 占用
-* [Python 环境管理](conda.md) —— 配置 PyTorch 环境
+* [Python 环境管理](uv.md) —— 用 uv 配 PyTorch 环境
 * [常见问题](faq.md) —— 更多报错处理
