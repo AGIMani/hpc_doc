@@ -10,11 +10,11 @@ site_description: 八卡 A100 服务器的 GPU 任务提交、节点访问与集
 site_author: xiaoxu03
 
 # >>> 部署前必改：换成你实际的线上地址（影响搜索、分享卡片与 canonical 链接）
-site_url: https://agimani.github.io/hpc_doc/
+site_url: https://your-org.github.io/tensei-server-doc/
 
 # >>> 部署前必改：换成你实际的代码仓库地址（右上角图标与「编辑此页」链接）
-repo_url: https://github.com/AGIMani/hpc_doc
-repo_name: AGIMani/hpc_doc
+repo_url: https://github.com/your-org/tensei-server-doc
+repo_name: your-org/tensei-server-doc
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; xiaoxu03
@@ -90,7 +90,7 @@ extra:
   generator: false
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/AGIMani/hpc_doc
+      link: https://github.com/your-org/tensei-server-doc
       name: 文档仓库
 
 extra_css:

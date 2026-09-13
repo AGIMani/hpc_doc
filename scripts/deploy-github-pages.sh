@@ -33,10 +33,16 @@ die() { echo "错误：$*" >&2; exit 1; }
 # 仓库叫 <user>.github.io  ->  站点在根路径
 # 仓库叫其它名字           ->  站点在 /<repo>/ 子路径
 # 写错会导致线上样式全丢（资源路径 404）。
-if [[ "$REPO_NAME" == "${GITHUB_USER}.github.io" ]]; then
-    SITE_URL="https://${GITHUB_USER}.github.io/"
+#
+# GitHub Pages 的域名把账号/组织名转成小写（org "AGIMani" -> agimani.github.io），
+# 所以 site_url 用小写形式。DNS 不区分大小写，两种写法都能访问，
+# 但 canonical 链接和 sitemap 应该用规范形式。
+PAGES_HOST="$(printf '%s' "$GITHUB_USER" | tr '[:upper:]' '[:lower:]')"
+
+if [[ "$REPO_NAME" == "${GITHUB_USER}.github.io" || "$REPO_NAME" == "${PAGES_HOST}.github.io" ]]; then
+    SITE_URL="https://${PAGES_HOST}.github.io/"
 else
-    SITE_URL="https://${GITHUB_USER}.github.io/${REPO_NAME}/"
+    SITE_URL="https://${PAGES_HOST}.github.io/${REPO_NAME}/"
 fi
 REPO_URL="https://github.com/${GITHUB_USER}/${REPO_NAME}"
 
