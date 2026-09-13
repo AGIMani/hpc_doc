@@ -23,7 +23,7 @@
 | Cockpit | — | `127.0.0.1:9090` | 预装 | `cockpit.socket` |
 | node-exporter | **未安装** | — | — | — |
 
-!!! warning "Prometheus 用的是 9091，不是默认的 9090"
+!!! warning "Prometheus 用的是 9091"
     Cockpit 已经占用了 `127.0.0.1:9090`。Debian/Ubuntu 的 Prometheus 包默认也监听 9090，
     直接安装会启动失败。我们用 systemd drop-in 把它改到 **9091**。
 
@@ -373,7 +373,7 @@ md5sum /root/grafana_13.2.1_amd64.deb
 
 !!! danger "文件大小和 MD5 必须与 `--print-uris` 输出一致"
     375 MB 的文件在网络不稳时很容易下载不完整。
-    大小或 MD5 不符就直接重新下载，不要尝试安装 ——
+    大小或 MD5 不符就直接重新下载 ——
     半个 `.deb` 装到一半失败会让系统处于难以收拾的状态。
 
 ### 从本地缓存安装
@@ -385,7 +385,7 @@ chmod 644 /var/cache/apt/archives/grafana_13.2.1_amd64.deb
 apt-get --no-download install grafana=13.2.1
 ```
 
-`--no-download` 让 apt 只使用本地缓存，不再尝试联网。
+`--no-download` 让 apt 只使用本地缓存。
 
 ### 只监听本机
 
@@ -408,7 +408,7 @@ systemctl restart grafana-server
 
 | 环境变量 | 作用 |
 |---|---|
-| `GF_SERVER_HTTP_ADDR=127.0.0.1` | **只监听本机**，不暴露到网络 |
+| `GF_SERVER_HTTP_ADDR=127.0.0.1` | **只监听本机** |
 | `GF_SERVER_ROOT_URL` | 生成链接用的地址，与隧道访问地址一致 |
 | `GF_USERS_ALLOW_SIGN_UP=false` | 禁止自助注册，账号必须管理员创建 |
 | `GF_AUTH_ANONYMOUS_ENABLED=false` | 禁止匿名访问 |
@@ -479,7 +479,7 @@ echo "DATASOURCE CONFIG OK"
 )
 ```
 
-!!! warning "这个文件包含密码，不要外传"
+!!! warning "这个文件包含密码"
     校验时只看命令有没有报错，或用健康检查接口确认：
 
     ```bash
@@ -518,7 +518,7 @@ systemctl restart grafana-server
 
 !!! info "这是整套监控里唯一需要自己写代码的部分"
     DCGM 只知道「GPU 0 利用率 87%」，不知道「GPU 0 属于 chao 的任务 4」。
-    Slurm 知道归属，但它的数据在 MariaDB 里，不是 Prometheus 指标。
+    Slurm 知道归属，但它的数据在 MariaDB 里。
     两者唯一的公共标识是 **GPU 的 UUID**（DCGM 有，Slurm 的分配信息里也有）。
 
     解法：写一个小的导出器，把 `scontrol show job -d` 里的 GPU 索引解析成
@@ -739,7 +739,7 @@ ORDER BY `GPU卡时` DESC;
 
 !!! warning "利用率 0% ≠ 卡没被分配"
     用户申请了卡但在读数据、调试、等 IO 时，利用率就是 0%。
-    判断「卡有没有被占用」要看 **Slurm 分配状态**，不是看利用率。
+    判断「卡有没有被占用」要看 **Slurm 分配状态**。
 
 ### 用户与任务面板的关联查询
 
@@ -775,7 +775,7 @@ max by (UUID) (
 做成「GPU → 用户 → 任务ID → 任务名 → 分配状态 → 利用率 → 显存」一张表。
 
 !!! warning "这张表的边界"
-    * 显示的是 **Slurm 分配归属**，不是进程归属；
+    * 显示的是 **Slurm 分配归属**；
     * **绕过 Slurm 直接启动的程序不会显示用户和任务**（但它的利用率会计入整卡数值）；
     * 采集失败时显示缺失值，**不会自动判为空闲**。
 

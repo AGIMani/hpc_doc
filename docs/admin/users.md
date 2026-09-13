@@ -81,7 +81,7 @@ on_error() {
     trap - ERR
     if [[ "$created" == 1 ]]; then
         usermod -L -e 1 "$username" || true
-        echo "配置未完成，账号已锁定。保留已创建内容供检查，不自动删除。"
+        echo "配置未完成，账号已锁定。已创建的内容保留供检查。"
     fi
     exit 1
 }

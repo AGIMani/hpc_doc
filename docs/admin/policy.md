@@ -30,7 +30,7 @@
 
 ### 设计取舍说明
 
-**整卡独占。** 一个任务拿到一张 A100 的全部 80 GB 显存，不做切分。
+**整卡独占。** 一个任务拿到一张 A100 的全部 80 GB 显存。
 在只有一台八卡机的规模下，这是最简单也最不容易出错的模型。
 
 **`RealMemory` 从实测值下调了约 62 GiB。** `slurmd -C` 实测 `RealMemory=2063878`，
@@ -82,7 +82,7 @@ PartitionName=gpu Nodes=TenseiNode1 Default=YES DefaultTime=01:00:00 MaxTime=7-0
 | `ProctrackType=proctrack/cgroup` | 用 cgroup 追踪进程，任务结束能可靠清理所有子进程 |
 | `TaskPlugin=task/cgroup,task/affinity` | 限制任务可见的设备与 CPU 亲和性 |
 | `JobAcctGatherType=jobacct_gather/cgroup` | 从 cgroup 采集内存峰值等用量数据 |
-| `ReturnToService=2` | 节点临时故障后，`slurmd` 一恢复就自动回到可用状态，不用人工 `scontrol update` |
+| `ReturnToService=2` | 节点临时故障后，`slurmd` 一恢复就自动回到可用状态 |
 | `OverSubscribe=NO` | 禁止 CPU 超额分配，保证任务拿到承诺的核数 |
 
 !!! warning "`RealMemory` 不要照抄实测值"
@@ -96,7 +96,7 @@ AutoDetect=nvidia
 Name=gpu Type=a100 File=/dev/nvidia[0-7]
 ```
 
-* `AutoDetect=nvidia`：由 `slurmd` 通过 NVML 自动发现 8 张卡，不需要手工写 8 行。
+* `AutoDetect=nvidia`：由 `slurmd` 通过 NVML 自动发现 8 张卡。
 * `Type=a100`：给资源加类型标签。当前用户统一用 `--gres=gpu:N`，
   也可以写 `--gres=gpu:a100:N`，两者等价。
 * `File=/dev/nvidia[0-7]`：把 GRES 与具体设备节点绑定，
@@ -142,7 +142,7 @@ ConstrainDevices=yes
 | **公平份额（Fair-share）** | 未启用 | 优先级不随历史用量衰减，先到先得 |
 | **抢占（Preemption）** | 未配置 | 大任务排队时不会被小任务插队挤掉 |
 | **QoS 分级** | 未创建 | 所有任务都用内置 `normal`，无法区分优先级 |
-| **显存配额** | 未配置 | `--mem` 限的是主机内存，不是显存 |
+| **显存配额** | 未配置 | 显存不受 `--mem` 限制 |
 | **并发任务数上限** | 未设置 | 用户可以提交任意多任务 |
 | `AccountingStorageEnforce` | 未启用 | **未注册用户仍可提交任务**，注册只影响记账归属 |
 

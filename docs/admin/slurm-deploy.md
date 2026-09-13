@@ -180,7 +180,7 @@ grep -RHE '^[[:space:]]*(deb |Types:|URIs:|Suites:|Components:)' \
 ```
 
 !!! tip "改版本前先用 `-s` 模拟"
-    `apt-get -s` 只做依赖求解并打印计划，不实际改动系统。
+    `apt-get -s` 只做依赖求解并打印计划。
     **这是避免把系统搞坏的最重要习惯。**
 
 ```bash
@@ -267,7 +267,7 @@ ls -1 /root/slurm-build/*.deb | wc -l
 !!! tip "构建一次会产出 17 个包"
     包括 `slurm-smd`、`slurm-smd-client`、`slurm-smd-slurmctld`、
     `slurm-smd-slurmd`、`slurm-smd-slurmdbd` 等。
-    **全部保留**，扩容新节点时直接复用，不用重新编译。
+    **全部保留**，扩容新节点时直接复用。
 
 ### 安装
 
@@ -321,7 +321,7 @@ install -d -o root  -g root  -m 0755 /var/spool/slurmd
 
 ## 4 写配置
 
-**先用 `slurmd -C` 拿到机器的真实参数**，不要凭猜测填：
+**先用 `slurmd -C` 拿到机器的真实参数**：
 
 ```bash
 slurmd -C
@@ -423,7 +423,7 @@ find /usr/lib /usr/lib64 -type f \
 装好的是 `cgroup_v2.so` 与 `gpu_nvidia.so`。
 
 !!! note "`slurmd -G` 里的 `Links=(null)`"
-    表示 GRES 插件没有检测 NVLink 拓扑，不影响整卡分配。
+    表示 GRES 插件没有检测 NVLink 拓扑。
     要看拓扑用 `nvidia-smi topo -m`。
 
 ### 验证 GRES 识别
@@ -644,7 +644,7 @@ flowchart TB
 | MUNGE key | `/etc/munge/munge.key` 所有节点**完全相同** |
 | 共享目录 | `/home` 通过 NFS 等共享，代码与数据路径一致 |
 
-**2. 安装 Slurm 包**（复用已构建的 `.deb`，不用重新编译）：
+**2. 安装 Slurm 包**（复用已构建的 `.deb`）：
 
 ```bash
 # 把包和配置从现有节点拷过去

@@ -5,7 +5,7 @@
 
 !!! danger "所有命令都必须通过 Slurm 提交"
     直接在登录终端跑 `python train.py` **拿不到 GPU**。
-    下面的每个例子都写在 `srun` 或 `sbatch` 里，不要把它们拆出来单独执行。
+    下面的每个例子都写在 `srun` 或 `sbatch` 里。
 
 ## 任务里能看到什么
 
@@ -311,7 +311,7 @@ for i, batch in enumerate(loader):
         optimizer.zero_grad()
 ```
 
-!!! danger "`--mem` 限制的是主机内存，不是显存"
+!!! danger "`--mem` 限制的是主机内存"
     `--mem=512G` 表示允许用 512 GiB **主机内存**。
     显存由任务自己管理，Slurm 不做显存配额。
     申请 8 张卡**不会**自动给你更多主机内存。

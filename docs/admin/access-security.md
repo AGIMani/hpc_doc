@@ -157,7 +157,7 @@ DeviceAllow=
 
 ### 验证
 
-让用户在**真实 SSH 会话**中执行（不是 `sudo`，不是 `runuser`）：
+让用户在**真实 SSH 会话**中执行（`sudo` 与 `runuser` 都无法复现该限制）：
 
 ```bash
 whoami
@@ -205,7 +205,7 @@ systemctl set-property user-1001.slice DevicePolicy=auto DeviceAllow=
 ```
 
 !!! note "root、DCGM、Grafana 都不受影响"
-    它们运行在 `system.slice` 下，不在用户 slice 里。
+    它们运行在 `system.slice` 下。
     下发限制后监控栈仍能正常采集 8 张卡。
 
 ## 封堵其他绕过入口
@@ -435,7 +435,7 @@ OOD 的网页密码与 Linux 密码是两套，用 htpasswd Basic 认证：
 install -d -m 0750 -o root -g www-data /etc/ood/auth
 ```
 
-!!! danger "Basic 认证的密码只是 Base64 编码，不是加密"
+!!! danger "Basic 认证的密码只是 Base64 编码"
     所以**不能用 HTTP 直接暴露到公网**。必须配 HTTPS，
     或者像这里一样只走 SSH 隧道。
 

@@ -84,7 +84,7 @@ systemctl is-active mariadb
 
 ### 一次性写入数据库账号与 `slurmdbd.conf`
 
-!!! tip "用脚本生成密码，不要手写"
+!!! tip "用脚本生成密码"
     下面的整段脚本会自动生成随机密码并写进权限 `600` 的配置文件，
     不需要你手工填写密码，**也不要把配置文件内容贴到聊天工具或工单里**。
 
@@ -334,7 +334,7 @@ sacct -S today -u chao -X \
 
 ## 日常查询
 
-!!! tip "日常用 `sacct`，不需要直接查 MariaDB"
+!!! tip "日常用 `sacct`"
 
 ```bash
 # 今天所有人的作业（-X 只显示主记录，避免 .batch/.extern 重复）
@@ -359,7 +359,7 @@ watch -n 5 'sacct -a -S today -X --format=JobID,User,JobName,State,Elapsed,Alloc
 | `AllocTRES` | 分配的资源，`gres/gpu=2` 表示两张卡 |
 | `MaxRSS` | 任务峰值内存 |
 
-!!! warning "`AllocTRES` 是分配量，不是使用量"
+!!! warning "`AllocTRES` 是分配量"
     「2 张卡跑 1 小时」= 2 GPU·小时。**这不代表这一小时里卡是满载的。**
     报告用量或做容量规划时不要把它当成算力消耗。
 

@@ -6,7 +6,7 @@
 
 ### `Failed to initialize NVML: Unknown Error`
 
-**这是预期行为，不是故障。**
+**这是预期行为。**
 
 集群限制了普通登录会话的设备访问，所以在 SSH 终端里直接跑 `nvidia-smi`
 拿不到 GPU。**所有需要显卡的命令都必须通过 Slurm 提交。**
@@ -140,7 +140,7 @@ for i, batch in enumerate(loader):
 
 ### `slurmstepd: error: Detected 1 oom-kill event`
 
-**这是主机内存不够**，不是显存。
+**这是主机内存不够。**
 
 ```bash
 #SBATCH --mem=256G     # 调大
@@ -366,7 +366,7 @@ squeue -u "$USER"
 python -c "import torch,sys; print(sys.version); print(torch.__version__, torch.version.cuda)"
 ```
 
-!!! tip "描述现象，不要猜测原因"
+!!! tip "描述现象"
     ✅ 「任务号 123 在 15:20 变成 `TIMEOUT`，日志最后一行是 saving checkpoint」
     ❌ 「集群坏了，我的任务跑不了」
 
