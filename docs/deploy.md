@@ -214,7 +214,7 @@ mkdocs gh-deploy --force
 
 ### 4.5 部署到 GitHub 组织
 
-把文档放到**组织（Organization）**而不是个人账号下，步骤基本一样，
+把文档放到**组织（Organization）**下，步骤基本一样，
 URL 规则也一样（`https://<组织名>.github.io/<仓库名>/`），
 但有**三处组织级设置会直接导致失败**，必须先确认。
 

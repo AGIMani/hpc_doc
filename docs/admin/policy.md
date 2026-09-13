@@ -30,9 +30,8 @@
 
 ### 设计取舍说明
 
-**整卡独占，不做 MIG 或显存切分。** 一个任务拿到一张 A100 的全部 80 GB 显存。
-A100 支持 MIG 切分，但切分后单卡的算力和显存碎片化，反而容易让大任务永远排不上队。
-在只有一台八卡机的规模下，整卡独占是最简单也最不容易出错的模型。
+**整卡独占。** 一个任务拿到一张 A100 的全部 80 GB 显存，不做切分。
+在只有一台八卡机的规模下，这是最简单也最不容易出错的模型。
 
 **`RealMemory` 从实测值下调了约 62 GiB。** `slurmd -C` 实测 `RealMemory=2063878`，
 配置里写成 `2000000`，把这 62 GiB 留给操作系统、`slurmd` 自身、文件系统缓存
@@ -41,7 +40,7 @@ A100 支持 MIG 切分，但切分后单卡的算力和显存碎片化，反而�
 **默认时限只有 1 小时，但最长允许 7 天。** 默认值偏小是为了让「忘记写 `--time`」
 的任务不会长期占卡；真正需要长跑的用户会显式写 `--time`，这是有意为之的摩擦。
 
-**启用 Backfill 而不是纯 FIFO。** 回填允许短任务插空档，能显著提高八卡机的利用率。
+**调度算法启用 Backfill（回填）。** 它允许短任务插空档，能显著提高八卡机的利用率。
 它对用户侧的直接要求是：**如实申报 `--time`**。虚报时长的任务会被排到最后。
 
 ## 关键配置解析
@@ -103,12 +102,6 @@ Name=gpu Type=a100 File=/dev/nvidia[0-7]
 * `File=/dev/nvidia[0-7]`：把 GRES 与具体设备节点绑定，
   这是 `task/cgroup` 能把任务限制到指定几张卡的基础。
 
-!!! note "`AutoDetect=nvidia` 的能力边界"
-    它提供整卡分配，但**不提供 MIG 支持，也不检测 NVLink 拓扑**。
-    `slurmd -G` 输出里的 `Links=(null)` 表示拓扑信息为空，
-    **不代表 NVLink 有故障** —— 检查 NVLink 要用 `nvidia-smi topo -m`。
-    需要 MIG 或拓扑感知调度时，要换成带 NVML 支持的 GRES 插件（`gpu_nvml.so`）。
-
 验证 GPU 资源是否被正确识别：
 
 ```bash
@@ -150,68 +143,8 @@ ConstrainDevices=yes
 | **抢占（Preemption）** | 未配置 | 大任务排队时不会被小任务插队挤掉 |
 | **QoS 分级** | 未创建 | 所有任务都用内置 `normal`，无法区分优先级 |
 | **显存配额** | 未配置 | `--mem` 限的是主机内存，不是显存 |
-| **MIG 切分** | 未启用 | 只能整卡分配 |
 | **并发任务数上限** | 未设置 | 用户可以提交任意多任务 |
 | `AccountingStorageEnforce` | 未启用 | **未注册用户仍可提交任务**，注册只影响记账归属 |
-
-### 如何按需补上这些策略
-
-!!! danger "先在测试环境验证"
-    以下命令直接作用于生产集群。建议先在 `slurm.conf` 中改好、
-    用 `slurmctld -C` 校验语法，再 `systemctl reload slurmctld`。
-
-**限制每用户 GPU 总量**（通过 QOS）：
-
-```bash
-# 创建 QoS：最多同时占用 4 张卡，最多同时跑 3 个任务
-sacctmgr -i add qos gpu-limited \
-  GrpTRES=gres/gpu=4 \
-  MaxTRESPerUser=gres/gpu=4 \
-  MaxJobsPerUser=3
-
-# 把账户 research 关联到该 QoS（抢占优先级 0 表示不抢占）
-sacctmgr -i modify account research set QOS=gpu-limited
-```
-
-**启用公平份额**，让重度用户的优先级随时间衰减：
-
-```bash
-# slurm.conf 中设置（需要重启 slurmctld）
-PriorityType=priority/multifactor
-PriorityDecayHalfLife=7-00:00:00
-PriorityWeightFairshare=10000
-PriorityWeightAge=1000
-PriorityWeightJobSize=1000
-```
-
-!!! note "公平份额只影响排队顺序，不限制用量"
-    它是「软」策略：重度用户的任务会排在后面，但资源空闲时仍能跑。
-    要硬性限制必须用 QOS 的 `GrpTRES` / `MaxTRESPerUser`。
-
-**启用抢占**（需要谨慎，会杀掉正在运行的任务）：
-
-```bash
-# slurm.conf
-PreemptType=preempt/qos
-PreemptMode=REQUEUE      # 或 GANG / CANCEL
-```
-
-**禁止未注册用户提交任务**：
-
-```bash
-# slurm.conf
-AccountingStorageEnforce=associations
-```
-
-!!! danger "开启前先把所有用户注册进记账库"
-    一旦启用 `associations`，**没有 `sacctmgr` 记录的用户会立刻无法提交任务**。
-    先用下面的命令核对，确认每个人都在：
-
-    ```bash
-    sacctmgr show associations format=Cluster,Account,User
-    ```
-
-    新用户的注册由 `tensei-add-user` 脚本自动完成，见[用户与账号管理](users.md)。
 
 ## 修改策略的标准流程
 

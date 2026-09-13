@@ -169,7 +169,7 @@ Error: unable to establish a connection to the specified host: localhost
 Error: Unable to connect to host engine. Host engine connection invalid/disconnected.
 ```
 
-**原因不是 DCGM 坏了，而是 `nvidia-dcgm.service` 处于 `inactive (dead)` 且 `disabled`** ——
+**原因是 `nvidia-dcgm.service` 处于 `inactive (dead)` 且 `disabled`** ——
 hostengine 进程根本没在跑。
 
 ```bash
@@ -561,7 +561,7 @@ ACTIVE = {"RUNNING", "SUSPENDED", "COMPLETING", "CONFIGURING"}
     slurm_gpu_exporter_success 0
     ```
 
-    而不是输出 8 行 `UNALLOCATED`。
+    不要输出 8 行 `UNALLOCATED`。
     否则看板会把「采集挂了」显示成「卡都空着」，
     管理员据此判断就会严重误判。
 
@@ -812,7 +812,7 @@ curl --noproxy '*' -fsS http://127.0.0.1:9401/metrics | head -3
 | **历史保留** | 指标 30 天，记账库无清理策略 | 记账表会持续增长，长期需归档 |
 
 !!! tip "优先补 node-exporter 和磁盘告警"
-    当前最现实的风险不是 GPU 故障，而是**磁盘写满**导致
+    当前最现实的风险是**磁盘写满**导致
     MariaDB 或 `slurmctld` 无法写入。装一个 node-exporter 加上
     根分区告警，成本很低，收益很高：
 

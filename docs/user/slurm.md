@@ -125,7 +125,7 @@ srun --gres=gpu:1 --cpus-per-task=8 --mem=32G \
     ```bash
     srun --gres=gpu:1 --time=00:30:00 --immediate=10 --pty bash
     ```
-    `--immediate=10` 表示「10 秒内拿不到资源就报错退出」，而不是无限排队。
+    `--immediate=10` 表示「10 秒内拿不到资源就报错退出」，不会无限排队。
     适合脚本化的自检，例如登录后快速确认隔离是否生效。
 
 进入任务后验证显卡：

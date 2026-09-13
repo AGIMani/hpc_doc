@@ -407,8 +407,8 @@ chmod 644 /etc/slurm/slurm.conf /etc/slurm/gres.conf /etc/slurm/cgroup.conf
 | 内存峰值统计 | 需要额外插件 | ✅ `jobacct_gather/cgroup` 原生支持 |
 
 !!! info "`cgroup.conf` 里没有 `/dev/nvidia*` 白名单"
-    设备限制不是靠手写允许列表，而是靠
-    `gres.conf` 的 `File=/dev/nvidia[0-7]` 与 `task/cgroup` 插件配合：
+    设备限制由
+    `gres.conf` 的 `File=/dev/nvidia[0-7]` 与 `task/cgroup` 插件配合完成：
     任务被分配哪几张卡，cgroup 就只放通哪几个设备节点。
     **手写白名单反而容易漏掉 `/dev/nvidiactl`、`/dev/nvidia-uvm` 这些必要设备。**
 
@@ -422,11 +422,9 @@ find /usr/lib /usr/lib64 -type f \
 
 装好的是 `cgroup_v2.so` 与 `gpu_nvidia.so`。
 
-!!! note "没有 `gpu_nvml.so` 意味着什么"
-    当前用 `AutoDetect=nvidia` 做整卡分配，够用。
-    但**不支持 MIG，也不做 NVLink 拓扑感知**。
-    `slurmd -G` 输出里的 `Links=(null)` 是插件没检测拓扑，**不是 NVLink 故障**。
-    需要这些能力时再引入 NVML 支持。
+!!! note "`slurmd -G` 里的 `Links=(null)`"
+    表示 GRES 插件没有检测 NVLink 拓扑，不影响整卡分配。
+    要看拓扑用 `nvidia-smi topo -m`。
 
 ### 验证 GRES 识别
 
@@ -531,7 +529,7 @@ runuser -l chao -c \
 GPU 0: NVIDIA A100-SXM4-80GB (UUID: GPU-a0276972-3de5-c07b-0c2f-bcc0084566b7)
 ```
 
-!!! success "任务内 `GPU 0` 而不是 `GPU 3` 才是对的"
+!!! success "任务内显示 `GPU 0` 才是对的"
     Slurm 会把分配给任务的卡重新编号并从 0 开始，
     同时用 cgroup 限制设备可见性。看到 `GPU 0` 说明隔离生效。
 

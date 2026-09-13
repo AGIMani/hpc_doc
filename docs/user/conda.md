@@ -13,7 +13,6 @@
 |---|---|
 | **conda** | 需要管理 CUDA 版本、非 Python 依赖（如 `ffmpeg`、`openmpi`），跨语言 |
 | **venv + pip** | 纯 Python 依赖，且系统 CUDA 已满足需求 |
-| **Apptainer / Docker** | 需要完全可复现、与宿主隔离的环境 |
 
 集群上推荐 **conda**：它能同时管理 Python 版本和 CUDA 运行时，
 避免「PyTorch 要求的 CUDA 版本和系统驱动不匹配」这类问题。
@@ -247,30 +246,6 @@ conda clean --all               # 清理缓存（省空间）
     # 看看家目录被谁占了
     du -sh ~/* | sort -h | tail -10
     ```
-
-## 容器方案（进阶）
-
-需要**完全可复现**的环境（例如论文复现、跨集群迁移）时，
-考虑用 Apptainer（原 Singularity），它不需要 root 权限：
-
-```bash
-# 从 Docker 镜像构建
-apptainer build pytorch.sif docker://pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
-
-# 在 Slurm 任务里运行
-srun --gres=gpu:1 --time=01:00:00 \
-  apptainer exec --nv pytorch.sif python train.py
-```
-
-| 特性 | conda | Apptainer |
-|---|---|---|
-| 上手难度 | 低 | 中 |
-| 隔离程度 | 仅 Python 层 | 完整文件系统 |
-| 可复现性 | 中 | 高 |
-| 需要 root | 否 | 否（`--fakeroot` 可选） |
-
-!!! note "当前集群未预装 Apptainer"
-    需要的话联系管理员。先用 conda 起步，遇到复现问题再上容器。
 
 ## 常见问题
 

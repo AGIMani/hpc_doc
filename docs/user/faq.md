@@ -366,7 +366,7 @@ squeue -u "$USER"
 python -c "import torch,sys; print(sys.version); print(torch.__version__, torch.version.cuda)"
 ```
 
-!!! tip "描述现象而不是猜测原因"
+!!! tip "描述现象，不要猜测原因"
     ✅ 「任务号 123 在 15:20 变成 `TIMEOUT`，日志最后一行是 saving checkpoint」
     ❌ 「集群坏了，我的任务跑不了」
 

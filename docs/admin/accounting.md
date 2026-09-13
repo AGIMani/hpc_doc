@@ -224,7 +224,7 @@ EOF
 
 | 配置项 | 含义 |
 |---|---|
-| `AccountingStorageType=accounting_storage/slurmdbd` | 通过 `slurmdbd` 转发（而不是直连 MySQL） |
+| `AccountingStorageType=accounting_storage/slurmdbd` | 通过 `slurmdbd` 转发到数据库 |
 | `AccountingStorageHost` / `Port` | `slurmdbd` 监听地址与端口 |
 | `AccountingStorageTRES=gres/gpu` | **额外记录 GPU 的分配数量与时长** |
 
@@ -256,7 +256,7 @@ sacctmgr show cluster format=Cluster,ControlHost,ControlPort
 
 !!! note "这一步不增加任何 GPU 限额"
     `add user` 只是建立归属关系，让用量能统计到这个人和这个账户上。
-    限额要另配 QOS，见[调度策略与配额](policy.md#如何按需补上这些策略)。
+    集群目前没有配置 GPU 限额，见[调度策略与配额](policy.md#当前没有启用的策略)。
 
 ### 重载并确认
 
@@ -506,7 +506,7 @@ error: Configured MailProg is invalid
 | QOS 分级 | 未创建任何 QoS，全部使用内置 `normal` |
 | Fair-share | 未启用，优先级不随历史用量衰减 |
 
-启用方法见[调度策略与配额](policy.md#如何按需补上这些策略)。
+本集群尚未启用这些限制，见[调度策略与配额](policy.md#当前没有启用的策略)。
 
 ## 相关文档
 

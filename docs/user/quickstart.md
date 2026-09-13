@@ -69,7 +69,7 @@ GPU 0: NVIDIA A100-SXM4-80GB (UUID: GPU-a0276972-...)
 nvidia-smi
 ```
 
-!!! tip "看到 `GPU 0` 而不是 `GPU 3` 是正常的"
+!!! tip "显示 `GPU 0` 是正常的"
     Slurm 会把分配给你们的卡重新编号成从 0 开始，并用 `CUDA_VISIBLE_DEVICES` 限定可见范围。
     你在任务里**不可能看到别人正在用的卡**。
 

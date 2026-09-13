@@ -282,7 +282,7 @@ dist.destroy_process_group()
 
 !!! warning "如果带宽远低于预期"
     检查 `nvidia-smi topo -m` 看 GPU 与网卡的连接关系，
-    确认 NCCL 走的是 IB/RoCE 而不是慢速以太网。
+    确认 NCCL 走的是 IB/RoCE 高速网络。
     这属于管理员侧的机间网络配置，需要联系管理员排查。
 
 ## 显存不够怎么办
