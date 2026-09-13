@@ -54,6 +54,7 @@ echo
 
 # --- 改写 mkdocs.yml -------------------------------------------------------
 if grep -q "your-org" mkdocs.yml; then
+    # 备份会被 .gitignore 里的 mkdocs.yml.bak-* 排除，不会提交进仓库
     cp -a mkdocs.yml "mkdocs.yml.bak-$(date +%Y%m%d-%H%M%S)"
 
     # site_url 单独处理（值取决于仓库名）

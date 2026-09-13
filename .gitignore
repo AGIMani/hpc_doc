@@ -2,3 +2,6 @@
 site/
 .DS_Store
 __pycache__/
+
+# 部署脚本改写 mkdocs.yml 前留下的备份
+mkdocs.yml.bak-*
