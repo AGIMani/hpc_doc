@@ -26,8 +26,8 @@ python -c "import torch; print(torch.cuda.device_count())"   # 2
     **不需要根据别人占用情况改代码**。
 
 !!! warning "不要手工覆盖 `CUDA_VISIBLE_DEVICES`"
-    它只控制「程序能看到哪些卡」。真正的隔离由 cgroup 完成 ——
-    覆盖它不会让你多拿到卡，只会让编号混乱、排查困难。
+    它只控制「程序能看到哪些卡」。覆盖它不会让你多拿到卡，
+    只会让编号混乱、排查困难。
 
 ## 单卡训练
 

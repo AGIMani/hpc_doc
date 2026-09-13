@@ -172,7 +172,6 @@ sacct -u "$USER" --starttime=today \
       --format=JobID,JobName,Elapsed,AllocTRES,State
 ```
 
-
 ## 完整流程速查
 
 ```bash

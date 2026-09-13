@@ -270,7 +270,6 @@ squeue -u "$USER"
 
     把 `nvidia-smi topo -m` 和 `ibstat` 的输出一起发给管理员。
 
-
 ## 磁盘与文件
 
 ### 家目录空间不足
