@@ -517,7 +517,7 @@ systemctl restart grafana-server
 ## 采集「哪张卡被谁占用」
 
 !!! info "这是整套监控里唯一需要自己写代码的部分"
-    DCGM 只知道「GPU 0 利用率 87%」，不知道「GPU 0 属于 chao 的任务 4」。
+    DCGM 只知道「GPU 0 利用率 87%」，不知道「GPU 0 属于 zhangsan 的任务 4」。
     Slurm 知道归属，但它的数据在 MariaDB 里。
     两者唯一的公共标识是 **GPU 的 UUID**（DCGM 有，Slurm 的分配信息里也有）。
 
@@ -548,7 +548,7 @@ ACTIVE = {"RUNNING", "SUSPENDED", "COMPLETING", "CONFIGURING"}
 
     ```text
     # TYPE slurm_gpu_allocation_info gauge
-    slurm_gpu_allocation_info{node="TenseiNode1",gpu="0",UUID="GPU-...",user="chao",job_id="4",job_name="gpu-owner-test",state="RUNNING"} 1
+    slurm_gpu_allocation_info{node="TenseiNode1",gpu="0",UUID="GPU-...",user="zhangsan",job_id="4",job_name="gpu-owner-test",state="RUNNING"} 1
     ```
 
 未分配的卡输出 `state="UNALLOCATED"`、`user="-"`。

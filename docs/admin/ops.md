@@ -275,7 +275,7 @@ sinfo
 | cgroup 模式 | 一致 | `stat -fc %T /sys/fs/cgroup` |
 
 !!! danger "UID 不一致是最隐蔽的问题"
-    用户 `chao` 在 A 机器是 UID 1000、在 B 机器是 UID 1002，
+    用户 `zhangsan` 在 A 机器是 UID 1000、在 B 机器是 UID 1002，
     那么在共享 `/home` 上他会看到「自己的文件属于别人」，
     甚至无法读写自己的文件。**扩节点前先统一 UID/GID。**
 

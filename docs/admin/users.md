@@ -317,7 +317,7 @@ done
 ```bash
 # 一次检查所有计算节点的用户与服务
 ansible gpu_nodes -m shell -a \
-  'getent passwd chao; systemctl is-active slurmd'
+  'getent passwd zhangsan; systemctl is-active slurmd'
 ```
 
 !!! tip "优先把「用户创建」和「配置分发」交给 Ansible"

@@ -246,8 +246,8 @@ sacctmgr -i add account research Cluster=tensei \
   Description="Research users" Organization=tensei
 
 # 3. 把用户关联到账户
-sacctmgr -i add user chao    Account=research Cluster=tensei
-sacctmgr -i add user wzixuan Account=research Cluster=tensei
+sacctmgr -i add user zhangsan    Account=research Cluster=tensei
+sacctmgr -i add user lisi Account=research Cluster=tensei
 
 # 4. 查看关联关系
 sacctmgr show associations format=Cluster,Account,User,DefaultQOS
@@ -321,11 +321,11 @@ sacctmgr show cluster format=Cluster,ControlHost,ControlPort
 用一个普通用户提交真实任务，再查库：
 
 ```bash
-runuser -l chao -c \
+runuser -l zhangsan -c \
   'srun --immediate=10 -A research -J accounting-test -N1 -n1 \
         --gres=gpu:1 --cpus-per-task=1 --mem=1G --time=00:01:00 nvidia-smi -L'
 
-sacct -S today -u chao -X \
+sacct -S today -u zhangsan -X \
   --format=JobID,User,Account,JobName,State,Elapsed,AllocTRES%70
 ```
 
@@ -342,7 +342,7 @@ sacct -a -S today -X \
   --format=JobID,User,Account,JobName%20,State,Start,Elapsed,AllocTRES%70
 
 # 某个人某段时间
-sacct -u chao -S 2026-09-11 -E 2026-09-12 -X \
+sacct -u zhangsan -S 2026-09-11 -E 2026-09-12 -X \
   --format=JobID,JobName%20,State,Elapsed,AllocTRES%70
 
 # 单个作业的详情（含退出码与内存峰值）

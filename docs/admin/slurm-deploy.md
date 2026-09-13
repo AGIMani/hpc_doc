@@ -516,7 +516,7 @@ srun -N 1 -n 1 --gres=gpu:1 \
 ### 隔离验证
 
 ```bash
-runuser -l chao -c \
+runuser -l zhangsan -c \
   'srun -A research -p gpu --immediate=10 \
         --gres=gpu:1 -N1 -n1 \
         --cpus-per-task=1 --mem=1G --time=00:01:00 \
@@ -542,7 +542,7 @@ scontrol show job -d <JOBID> | grep -E 'JOB_GRES|Nodes=|UserId='
 ```text
    JOB_GRES=gpu:a100:1
      Nodes=TenseiNode1 CPU_IDs=0-1 Mem=1024 GRES=gpu:a100:1(IDX:0)
-   UserId=chao(1000) GroupId=chao(1000) MCS_label=N/A
+   UserId=zhangsan(1000) GroupId=zhangsan(1000) MCS_label=N/A
 ```
 
 `(IDX:0)` 就是物理 GPU 索引，这是后来做「哪张卡属于谁」监控的关键字段。

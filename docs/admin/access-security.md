@@ -91,10 +91,10 @@ Slurm 作业在系统 slice 下。
 
 ```bash
 # 用户权限：是否存在能绕过限制的管理员权限
-id chao
-id wzixuan
-sudo -l -U chao
-sudo -l -U wzixuan
+id zhangsan
+id lisi
+sudo -l -U zhangsan
+sudo -l -U lisi
 
 # 用户会话与 Slurm 服务所在的 cgroup
 loginctl list-sessions
@@ -113,7 +113,7 @@ cat /etc/slurm/cgroup.conf
 预期看到：
 
 ```text
-User chao is not allowed to run sudo on TenseiNode1.
+User zhangsan is not allowed to run sudo on TenseiNode1.
 ControlGroup=/user.slice/user-1000.slice
 DevicePolicy=auto
 ControlGroup=/system.slice/slurmd.service
@@ -151,7 +151,7 @@ DeviceAllow=
 ```
 
 !!! warning "UID 必须与实际用户对应"
-    这里写死的是 `chao`(1000) 和 `wzixuan`(1001)。
+    这里写死的是 `zhangsan`(1000) 和 `lisi`(1001)。
     **新用户创建后必须同样下发限制**，否则新账号不受约束。
     这正是 [`tensei-add-user`](users.md) 脚本要自动做这件事的原因。
 
@@ -168,7 +168,7 @@ nvidia-smi -L
 预期：
 
 ```text
-chao
+zhangsan
 0::/user.slice/user-1000.slice/session-355.scope
 Failed to initialize NVML: Unknown Error
 ```
@@ -241,13 +241,13 @@ echo "ENTRY RESTRICTIONS OK"
 验证：
 
 ```bash
-runuser -u chao -- crontab -l
-runuser -u wzixuan -- crontab -l
+runuser -u zhangsan -- crontab -l
+runuser -u lisi -- crontab -l
 systemctl is-active apache2
 command -v atq >/dev/null && atq
 ```
 
-预期普通用户会看到 `You (chao) are not allowed to use this program`。
+预期普通用户会看到 `You (zhangsan) are not allowed to use this program`。
 
 !!! note "确认 PAM 会话配置"
     `cron`、`sshd`、`cockpit` 都应该 include `common-session`，
@@ -269,7 +269,7 @@ command -v atq >/dev/null && atq
     建议定期检查用户进程的实际 cgroup：
 
     ```bash
-    ps -ww -u chao,wzixuan -o user,pid,cgroup:120,comm
+    ps -ww -u zhangsan,lisi -o user,pid,cgroup:120,comm
     ```
 
     如果出现不属于 `user-<UID>.slice` 的用户进程，就要单独评估。

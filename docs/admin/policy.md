@@ -227,7 +227,7 @@ scontrol show node TenseiNode1
 systemctl is-active slurmctld slurmd slurmdbd
 
 # 以普通用户身份验证（在服务器上以 root 执行）
-runuser -l chao -c \
+runuser -l zhangsan -c \
   'srun --immediate=10 -A research -p gpu -N1 -n1 --gres=gpu:1 \
         --cpus-per-task=1 --mem=1G --time=00:01:00 \
         bash -c "cat /proc/self/cgroup; nvidia-smi -L"'
